@@ -3,6 +3,7 @@ package ProyectoPlantilla;
 import java.awt.*;
 import java.sql.*;
 import javax.swing.JOptionPane;
+import javax.swing.*;
 
 public class FormIniciarSesion extends javax.swing.JFrame {
    
@@ -10,8 +11,110 @@ public class FormIniciarSesion extends javax.swing.JFrame {
    public static String RolUsuario;  // Global, rol del usuario logueado (Administrador, Coordinador, etc.)
    
    public FormIniciarSesion() {
-        initComponents();
-        setLocationRelativeTo(null);  // centrar ventana
+    initComponents();
+    setLocationRelativeTo(null);
+    aplicarDiseno();
+}
+   private ImageIcon cargarImagenArchivo(String ruta, int ancho, int alto) {
+    ImageIcon icono = new ImageIcon(ruta);
+    Image img = icono.getImage().getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+    return new ImageIcon(img);
+}
+   private void aplicarDiseno() {
+    setTitle("Acceso Administrador - Expreso Los Chankas S.A.C.");
+    setSize(1000, 680);
+    setLocationRelativeTo(null);
+    setResizable(false);
+
+    jPanel1.setLayout(null);
+    jPanel1.setBackground(new Color(225, 242, 255));
+
+    JLabel fondo = new JLabel(cargarImagenArchivo("src/ProyectoPlantilla/imagenes/fondo.png", 1000, 680));
+    fondo.setBounds(0, 0, 1000, 680);
+
+    JLabel logo = new JLabel(cargarImagenArchivo("src/ProyectoPlantilla/imagenes/logo.jpeg", 300, 110));
+    logo.setBounds(350, 25, 300, 110);
+    jPanel1.add(logo);
+
+    JPanel card = new JPanel(null);
+    card.setBackground(new Color(255, 255, 255, 235));
+    card.setBounds(210, 160, 580, 360);
+    card.setBorder(BorderFactory.createLineBorder(new Color(220, 230, 240)));
+    jPanel1.add(card);
+
+    JLabel titulo = new JLabel("ACCESO ADMINISTRADOR", SwingConstants.CENTER);
+    titulo.setFont(new Font("Arial", Font.BOLD, 32));
+    titulo.setForeground(new Color(0, 31, 84));
+    titulo.setBounds(60, 35, 470, 45);
+    card.add(titulo);
+
+    jLabel1.setText("Usuario:");
+    jLabel1.setFont(new Font("Arial", Font.BOLD, 17));
+    jLabel1.setForeground(new Color(0, 31, 84));
+    jLabel1.setBounds(90, 120, 130, 30);
+    card.add(jLabel1);
+
+    txtUser.setBounds(230, 118, 280, 38);
+    txtUser.setFont(new Font("Arial", Font.PLAIN, 15));
+    card.add(txtUser);
+
+    jLabel2.setText("Contraseña:");
+    jLabel2.setFont(new Font("Arial", Font.BOLD, 17));
+    jLabel2.setForeground(new Color(0, 31, 84));
+    jLabel2.setBounds(90, 180, 130, 30);
+    card.add(jLabel2);
+
+    txtPassw.setBounds(230, 178, 280, 38);
+    txtPassw.setFont(new Font("Arial", Font.PLAIN, 15));
+    card.add(txtPassw);
+
+    btnIniciarSesion.setText("INGRESAR");
+    btnIniciarSesion.setBounds(130, 260, 160, 45);
+    btnIniciarSesion.setBackground(new Color(245, 180, 0));
+    btnIniciarSesion.setForeground(Color.BLACK);
+    btnIniciarSesion.setFont(new Font("Arial", Font.BOLD, 16));
+    btnIniciarSesion.setFocusPainted(false);
+    card.add(btnIniciarSesion);
+
+    btnCancelarInicio.setText("VOLVER");
+    btnCancelarInicio.setBounds(320, 260, 160, 45);
+    btnCancelarInicio.setBackground(new Color(0, 94, 180));
+    btnCancelarInicio.setForeground(Color.WHITE);
+    btnCancelarInicio.setFont(new Font("Arial", Font.BOLD, 16));
+    btnCancelarInicio.setFocusPainted(false);
+    card.add(btnCancelarInicio);
+
+    JLabel pie = new JLabel("Acceso seguro y confidencial", SwingConstants.CENTER);
+    pie.setFont(new Font("Arial", Font.PLAIN, 15));
+    pie.setForeground(new Color(0, 70, 150));
+    pie.setBounds(160, 320, 280, 25);
+    card.add(pie);
+
+    JPanel footer = new JPanel(null);
+    footer.setBackground(new Color(0, 31, 84));
+    footer.setBounds(0, 560, 1000, 120);
+    jPanel1.add(footer);
+
+    JLabel empresa = new JLabel("<html><b>EXPRESO</b><br>LOS CHANKAS S.A.C.</html>");
+    empresa.setForeground(Color.WHITE);
+    empresa.setFont(new Font("Arial", Font.BOLD, 24));
+    empresa.setBounds(60, 25, 300, 70);
+    footer.add(empresa);
+
+    JLabel info = new JLabel("Seguridad y confianza     |     Soporte técnico");
+    info.setForeground(Color.WHITE);
+    info.setFont(new Font("Arial", Font.BOLD, 17));
+    info.setBounds(430, 35, 450, 30);
+    footer.add(info);
+
+    JLabel info2 = new JLabel("Tu información está protegida con nosotros");
+    info2.setForeground(new Color(220, 235, 255));
+    info2.setFont(new Font("Arial", Font.PLAIN, 14));
+    info2.setBounds(430, 65, 400, 25);
+    footer.add(info2);
+
+    jPanel1.add(fondo);
+    fondo.setVisible(true);
 }
  @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -116,7 +219,8 @@ public class FormIniciarSesion extends javax.swing.JFrame {
 private void txtUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserActionPerformed
 }//GEN-LAST:event_txtUserActionPerformed
 private void btnCancelarInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarInicioActionPerformed
-       System.exit(0);
+    new FormInicio().setVisible(true);
+dispose();
 }//GEN-LAST:event_btnCancelarInicioActionPerformed
 
 private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
