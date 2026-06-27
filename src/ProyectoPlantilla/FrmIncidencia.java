@@ -8,12 +8,6 @@ import java.awt.*;
 import java.util.Date;
 import javax.swing.*;
 
-/**
- * Formulario de Registro de Incidencias.
- * Permite buscar la encomienda por código y registrar el problema
- * presentado (daño, extravío, retraso o error de datos).
- * AUTOR: Carmen Del Rosario Anco - Proyecto Grupal POO
- */
 public class FrmIncidencia extends JFrame {
 
     private JTextField txtCodigoEncomienda;
@@ -24,107 +18,186 @@ public class FrmIncidencia extends JFrame {
 
     public FrmIncidencia() {
         initComponents();
-        this.setLocationRelativeTo(null);
-        this.setTitle("Registrar Incidencia");
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setTitle("Registrar Incidencia");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private void initComponents() {
-        Color azul = new Color(41, 98, 168);
+        Color azulOscuro = new Color(0, 31, 84);
+        Color azulMedio = new Color(0, 94, 180);
+        Color amarillo = new Color(245, 180, 0);
+        Color fondo = new Color(245, 248, 252);
         Color blanco = Color.WHITE;
 
-        getContentPane().setBackground(blanco);
-        setSize(420, 450);
-        setLayout(new BorderLayout());
+        setSize(560, 580);
+        setResizable(false);
+        setLayout(null);
+        getContentPane().setBackground(fondo);
 
-        JLabel lblTitulo = new JLabel("Registro de Incidencia", SwingConstants.CENTER);
-        lblTitulo.setOpaque(true);
-        lblTitulo.setBackground(azul);
+        JPanel header = new JPanel(null);
+        header.setBackground(azulOscuro);
+        header.setBounds(0, 0, 560, 95);
+        add(header);
+
+        JLabel lblTitulo = new JLabel("REGISTRO DE INCIDENCIA", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblTitulo.setForeground(blanco);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblTitulo.setPreferredSize(new Dimension(420, 45));
-        add(lblTitulo, BorderLayout.NORTH);
+        lblTitulo.setBounds(0, 22, 560, 30);
+        header.add(lblTitulo);
 
-        JPanel panelForm = new JPanel();
-        panelForm.setBackground(blanco);
-        panelForm.setLayout(new BoxLayout(panelForm, BoxLayout.Y_AXIS));
-        panelForm.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
+        JLabel lblSubtitulo = new JLabel("Busque una encomienda y registre el problema", SwingConstants.CENTER);
+        lblSubtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        lblSubtitulo.setForeground(new Color(220, 235, 255));
+        lblSubtitulo.setBounds(0, 52, 560, 25);
+        header.add(lblSubtitulo);
 
-        // --- Búsqueda de encomienda ---
-        JPanel panelBusqueda = new JPanel(new BorderLayout(5, 0));
-        panelBusqueda.setBackground(blanco);
-        txtCodigoEncomienda = new JTextField();
-        JButton btnBuscar = new JButton("Buscar");
-        btnBuscar.setBackground(azul);
-        btnBuscar.setForeground(blanco);
-        panelBusqueda.add(new JLabel("Código de Encomienda: "), BorderLayout.WEST);
-        panelBusqueda.add(txtCodigoEncomienda, BorderLayout.CENTER);
-        panelBusqueda.add(btnBuscar, BorderLayout.EAST);
-        panelForm.add(panelBusqueda);
+        JPanel card = new JPanel(null);
+        card.setBackground(blanco);
+        card.setBounds(45, 120, 470, 360);
+        card.setBorder(BorderFactory.createLineBorder(new Color(225, 225, 225)));
+        add(card);
 
-        lblDatosEncomienda = new JLabel(" ");
-        lblDatosEncomienda.setForeground(new Color(0, 120, 0));
+        JLabel lblCodigo = crearLabel("Código de encomienda:");
+        lblCodigo.setBounds(35, 30, 170, 32);
+        card.add(lblCodigo);
+
+        txtCodigoEncomienda = crearCampo();
+        txtCodigoEncomienda.setBounds(205, 30, 150, 34);
+        card.add(txtCodigoEncomienda);
+
+        JButton btnBuscar = crearBoton("BUSCAR", azulMedio, blanco);
+        btnBuscar.setBounds(365, 30, 75, 34);
+        card.add(btnBuscar);
+
+        lblDatosEncomienda = new JLabel("Ingrese un código y presione BUSCAR.");
         lblDatosEncomienda.setFont(new Font("Segoe UI", Font.ITALIC, 12));
-        lblDatosEncomienda.setBorder(BorderFactory.createEmptyBorder(8, 0, 8, 0));
-        panelForm.add(lblDatosEncomienda);
+        lblDatosEncomienda.setForeground(new Color(90, 90, 90));
+        lblDatosEncomienda.setBounds(35, 72, 405, 45);
+        card.add(lblDatosEncomienda);
 
-        // --- Tipo de incidencia ---
-        JPanel panelTipo = new JPanel(new BorderLayout(5, 0));
-        panelTipo.setBackground(blanco);
-        cmbTipo = new JComboBox<>(new String[]{"Daño", "Extravío", "Retraso", "Error de datos"});
-        panelTipo.add(new JLabel("Tipo de Incidencia: "), BorderLayout.WEST);
-        panelTipo.add(cmbTipo, BorderLayout.CENTER);
-        panelTipo.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0));
-        panelForm.add(panelTipo);
+        JLabel lblTipo = crearLabel("Tipo de incidencia:");
+        lblTipo.setBounds(35, 130, 170, 32);
+        card.add(lblTipo);
 
-        // --- Descripción ---
-        JLabel lblDescripcion = new JLabel("Descripción:");
-        panelForm.add(lblDescripcion);
-        txtDescripcion = new JTextArea(6, 20);
+        cmbTipo = new JComboBox<>(new String[]{
+            "Retraso en entrega",
+            "Paquete dañado",
+            "Extravío de encomienda",
+            "Error en datos del destinatario",
+            "Problema de atención",
+            "Otro"
+        });
+        cmbTipo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        cmbTipo.setBounds(205, 130, 235, 34);
+        card.add(cmbTipo);
+
+        JLabel lblDescripcion = crearLabel("Descripción:");
+        lblDescripcion.setBounds(35, 178, 170, 28);
+        card.add(lblDescripcion);
+
+        txtDescripcion = new JTextArea();
+        txtDescripcion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         txtDescripcion.setLineWrap(true);
         txtDescripcion.setWrapStyleWord(true);
+        txtDescripcion.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+
         JScrollPane scroll = new JScrollPane(txtDescripcion);
-        panelForm.add(scroll);
+        scroll.setBounds(35, 210, 405, 115);
+        card.add(scroll);
 
-        add(panelForm, BorderLayout.CENTER);
+        JButton btnRegistrar = crearBoton("REGISTRAR INCIDENCIA", amarillo, azulOscuro);
+        JButton btnLimpiar = crearBoton("LIMPIAR", azulMedio, blanco);
+        JButton btnRegresar = crearBoton("REGRESAR", new Color(178, 34, 34), blanco);
 
-        JPanel panelBotones = new JPanel();
-        panelBotones.setBackground(blanco);
-        JButton btnRegistrar = new JButton("Registrar Incidencia");
-        btnRegistrar.setBackground(azul);
-        btnRegistrar.setForeground(blanco);
-        panelBotones.add(btnRegistrar);
-        add(panelBotones, BorderLayout.SOUTH);
+        btnRegistrar.setBounds(45, 500, 185, 38);
+        btnLimpiar.setBounds(245, 500, 120, 38);
+        btnRegresar.setBounds(380, 500, 135, 38);
+
+        add(btnRegistrar);
+        add(btnLimpiar);
+        add(btnRegresar);
 
         btnBuscar.addActionListener(e -> buscarEncomienda());
         btnRegistrar.addActionListener(e -> registrarIncidencia());
+        btnLimpiar.addActionListener(e -> limpiar());
+        btnRegresar.addActionListener(e -> dispose());
+    }
+
+    private JLabel crearLabel(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        label.setForeground(new Color(0, 31, 84));
+        return label;
+    }
+
+    private JTextField crearCampo() {
+        JTextField campo = new JTextField();
+        campo.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(190, 200, 215)),
+                BorderFactory.createEmptyBorder(4, 8, 4, 8)
+        ));
+        return campo;
+    }
+
+    private JButton crearBoton(String texto, Color fondo, Color letra) {
+        JButton btn = new JButton(texto);
+        btn.setBackground(fondo);
+        btn.setForeground(letra);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 
     private void buscarEncomienda() {
         String codigo = txtCodigoEncomienda.getText().trim();
+
         if (codigo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese el código de la encomienda");
+            JOptionPane.showMessageDialog(this, "Ingrese el código de la encomienda.");
+            txtCodigoEncomienda.requestFocus();
             return;
         }
+
         EncomiendaDAO dao = new EncomiendaDAO();
         encomiendaEncontrada = dao.buscarPorCodigo(codigo);
+
         if (encomiendaEncontrada == null) {
             lblDatosEncomienda.setForeground(Color.RED);
             lblDatosEncomienda.setText("No se encontró ninguna encomienda con ese código.");
-        } else {
-            lblDatosEncomienda.setForeground(new Color(0, 120, 0));
-            lblDatosEncomienda.setText("Encontrada: " + encomiendaEncontrada.getNombreRemitente()
-                    + " -> " + encomiendaEncontrada.getNombreDestinatario());
+            return;
         }
+
+        lblDatosEncomienda.setForeground(new Color(0, 120, 0));
+        lblDatosEncomienda.setText("<html>Encontrada: <b>"
+                + encomiendaEncontrada.getNombreRemitente()
+                + "</b> → <b>"
+                + encomiendaEncontrada.getNombreDestinatario()
+                + "</b><br>Estado actual: "
+                + encomiendaEncontrada.getEstado()
+                + "</html>");
     }
 
     private void registrarIncidencia() {
         if (encomiendaEncontrada == null) {
-            JOptionPane.showMessageDialog(this, "Primero busque una encomienda válida");
+            JOptionPane.showMessageDialog(this, "Primero busque una encomienda válida.");
             return;
         }
+
+        String estadoActual = encomiendaEncontrada.getEstado();
+
+        if (estadoActual.equalsIgnoreCase("Con incidencia")) {
+            JOptionPane.showMessageDialog(this,
+                    "Esta encomienda ya tiene una incidencia registrada.\n"
+                    + "No puede registrar otra incidencia sobre el mismo envío.");
+            return;
+        }
+
         if (txtDescripcion.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Describa la incidencia");
+            JOptionPane.showMessageDialog(this, "Describa la incidencia.");
+            txtDescripcion.requestFocus();
             return;
         }
 
@@ -139,12 +212,32 @@ public class FrmIncidencia extends JFrame {
         );
 
         IncidenciaDAO dao = new IncidenciaDAO();
+
         if (dao.registrar(inc)) {
-            // También actualizamos el estado de la encomienda para reflejar el problema
-            new EncomiendaDAO().actualizarEstado(encomiendaEncontrada.getIdEncomienda(), "Con incidencia");
-            JOptionPane.showMessageDialog(this, "Incidencia registrada correctamente");
-            this.dispose();
+            new EncomiendaDAO().actualizarEstado(
+                    encomiendaEncontrada.getIdEncomienda(),
+                    "Con incidencia"
+            );
+
+            JOptionPane.showMessageDialog(this,
+                    "✅ Incidencia registrada correctamente.\n\n"
+                    + "Código: " + encomiendaEncontrada.getCodigo()
+                    + "\nEstado de incidencia: Pendiente");
+
+            limpiar();
         }
+    }
+
+    private void limpiar() {
+        txtCodigoEncomienda.setText("");
+        txtDescripcion.setText("");
+        cmbTipo.setSelectedIndex(0);
+        encomiendaEncontrada = null;
+
+        lblDatosEncomienda.setForeground(new Color(90, 90, 90));
+        lblDatosEncomienda.setText("Ingrese un código y presione BUSCAR.");
+
+        txtCodigoEncomienda.requestFocus();
     }
 
     public static void main(String[] args) {

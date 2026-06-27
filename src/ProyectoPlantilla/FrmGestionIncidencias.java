@@ -7,83 +7,147 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-/**
- * Formulario de Gestión de Incidencias.
- * Muestra todas las incidencias registradas y permite cambiar su
- * estado (Pendiente, En proceso, Resuelta) junto con la solución aplicada.
- * AUTOR: Carmen Del Rosario Anco - Proyecto Grupal POO
- */
 public class FrmGestionIncidencias extends JFrame {
 
     private JTable tabla;
     private DefaultTableModel modelo;
-    private JComboBox<String> cmbNuevoEstado;
+    private JComboBox<String> cmbEstado;
     private JTextField txtSolucion;
+    private JButton btnActualizar, btnRefrescar, btnLimpiar, btnRegresar;
 
     public FrmGestionIncidencias() {
         initComponents();
-        cargarDatos();
-        this.setLocationRelativeTo(null);
-        this.setTitle("Gestión de Incidencias");
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        cargarIncidencias();
+        setLocationRelativeTo(null);
+        setTitle("Gestión de Incidencias");
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private void initComponents() {
-        Color azul = new Color(41, 98, 168);
+        Color azulOscuro = new Color(0, 31, 84);
+        Color azulMedio = new Color(0, 94, 180);
+        Color amarillo = new Color(245, 180, 0);
+        Color fondo = new Color(245, 248, 252);
         Color blanco = Color.WHITE;
 
-        getContentPane().setBackground(blanco);
-        setSize(720, 500);
-        setLayout(new BorderLayout());
+        setSize(850, 640);
+        setResizable(false);
+        setLayout(null);
+        getContentPane().setBackground(fondo);
 
-        JLabel lblTitulo = new JLabel("Gestión de Incidencias", SwingConstants.CENTER);
-        lblTitulo.setOpaque(true);
-        lblTitulo.setBackground(azul);
-        lblTitulo.setForeground(blanco);
-        lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        lblTitulo.setPreferredSize(new Dimension(720, 45));
-        add(lblTitulo, BorderLayout.NORTH);
+        JPanel header = new JPanel(null);
+        header.setBackground(azulOscuro);
+        header.setBounds(0, 0, 850, 90);
+        add(header);
+
+        JLabel titulo = new JLabel("GESTIÓN DE INCIDENCIAS", SwingConstants.CENTER);
+        titulo.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titulo.setForeground(blanco);
+        titulo.setBounds(0, 20, 850, 35);
+        header.add(titulo);
+
+        JLabel subtitulo = new JLabel("Actualice el estado y solución de las incidencias registradas", SwingConstants.CENTER);
+        subtitulo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        subtitulo.setForeground(new Color(220, 235, 255));
+        subtitulo.setBounds(0, 52, 850, 25);
+        header.add(subtitulo);
+
+        JPanel cardTabla = new JPanel(null);
+        cardTabla.setBackground(blanco);
+        cardTabla.setBounds(35, 115, 780, 300);
+        cardTabla.setBorder(BorderFactory.createLineBorder(new Color(220, 225, 235)));
+        add(cardTabla);
 
         modelo = new DefaultTableModel(
-                new Object[]{"ID", "Cod. Encomienda", "Tipo", "Descripción", "Estado", "Solución"}, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+                new Object[]{"ID", "Cod. Encomienda", "Tipo", "Descripción", "Estado", "Solución"}, 0
+        );
+
         tabla = new JTable(modelo);
-        tabla.setRowHeight(24);
+        tabla.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        tabla.setRowHeight(28);
+        tabla.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 13));
+        tabla.getTableHeader().setBackground(azulMedio);
+        tabla.getTableHeader().setForeground(Color.WHITE);
+        tabla.setSelectionBackground(new Color(230, 240, 255));
+
         JScrollPane scroll = new JScrollPane(tabla);
-        add(scroll, BorderLayout.CENTER);
+        scroll.setBounds(15, 15, 750, 270);
+        cardTabla.add(scroll);
 
-        JPanel panelInferior = new JPanel();
-        panelInferior.setBackground(blanco);
-        panelInferior.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        JPanel cardAcciones = new JPanel(null);
+        cardAcciones.setBackground(blanco);
+        cardAcciones.setBounds(35, 435, 780, 85);
+        cardAcciones.setBorder(BorderFactory.createLineBorder(new Color(220, 225, 235)));
+        add(cardAcciones);
 
-        cmbNuevoEstado = new JComboBox<>(new String[]{"Pendiente", "En proceso", "Resuelta"});
-        txtSolucion = new JTextField(25);
-        JButton btnActualizar = new JButton("Actualizar Estado");
-        btnActualizar.setBackground(azul);
-        btnActualizar.setForeground(blanco);
-        JButton btnRefrescar = new JButton("Refrescar");
+        JLabel lblEstado = crearLabel("Nuevo estado:");
+        lblEstado.setBounds(25, 25, 100, 30);
+        cardAcciones.add(lblEstado);
 
-        panelInferior.add(new JLabel("Nuevo estado:"));
-        panelInferior.add(cmbNuevoEstado);
-        panelInferior.add(new JLabel("Solución:"));
-        panelInferior.add(txtSolucion);
-        panelInferior.add(btnActualizar);
-        panelInferior.add(btnRefrescar);
+        cmbEstado = new JComboBox<>(new String[]{
+            "Pendiente",
+            "En proceso",
+            "Resuelta"
+        });
+        cmbEstado.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        cmbEstado.setBounds(125, 25, 130, 32);
+        cardAcciones.add(cmbEstado);
 
-        add(panelInferior, BorderLayout.SOUTH);
+        JLabel lblSolucion = crearLabel("Solución:");
+        lblSolucion.setBounds(275, 25, 70, 30);
+        cardAcciones.add(lblSolucion);
 
-        btnActualizar.addActionListener(e -> actualizarEstado());
-        btnRefrescar.addActionListener(e -> cargarDatos());
+        txtSolucion = new JTextField();
+        txtSolucion.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        txtSolucion.setBounds(345, 25, 260, 32);
+        cardAcciones.add(txtSolucion);
+
+        btnActualizar = crearBoton("ACTUALIZAR", amarillo, azulOscuro);
+        btnActualizar.setBounds(620, 25, 135, 32);
+        cardAcciones.add(btnActualizar);
+
+        btnRefrescar = crearBoton("REFRESCAR", azulMedio, blanco);
+        btnLimpiar = crearBoton("LIMPIAR", azulMedio, blanco);
+        btnRegresar = crearBoton("REGRESAR", new Color(178, 34, 34), blanco);
+
+        btnRefrescar.setBounds(160, 535, 150, 36);
+        btnLimpiar.setBounds(350, 535, 150, 36);
+        btnRegresar.setBounds(540, 535, 150, 36);
+
+        add(btnRefrescar);
+        add(btnLimpiar);
+        add(btnRegresar);
+
+        btnActualizar.addActionListener(e -> actualizarIncidencia());
+        btnRefrescar.addActionListener(e -> cargarIncidencias());
+        btnLimpiar.addActionListener(e -> limpiar());
+        btnRegresar.addActionListener(e -> dispose());
     }
 
-    private void cargarDatos() {
+    private JLabel crearLabel(String texto) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        label.setForeground(new Color(0, 31, 84));
+        return label;
+    }
+
+    private JButton crearBoton(String texto, Color fondo, Color letra) {
+        JButton btn = new JButton(texto);
+        btn.setBackground(fondo);
+        btn.setForeground(letra);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
+    }
+
+    private void cargarIncidencias() {
         modelo.setRowCount(0);
+
         IncidenciaDAO dao = new IncidenciaDAO();
         List<Incidencia> lista = dao.listarTodas();
+
         for (Incidencia inc : lista) {
             modelo.addRow(new Object[]{
                 inc.getIdIncidencia(),
@@ -96,22 +160,37 @@ public class FrmGestionIncidencias extends JFrame {
         }
     }
 
-    private void actualizarEstado() {
+    private void actualizarIncidencia() {
         int fila = tabla.getSelectedRow();
+
         if (fila == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccione una incidencia de la tabla");
+            JOptionPane.showMessageDialog(this, "Seleccione una incidencia de la tabla.");
             return;
         }
-        int idIncidencia = (int) modelo.getValueAt(fila, 0);
-        String nuevoEstado = (String) cmbNuevoEstado.getSelectedItem();
+
+        int idIncidencia = Integer.parseInt(tabla.getValueAt(fila, 0).toString());
+        String nuevoEstado = cmbEstado.getSelectedItem().toString();
         String solucion = txtSolucion.getText().trim();
 
-        IncidenciaDAO dao = new IncidenciaDAO();
-        if (dao.actualizarEstadoYSolucion(idIncidencia, nuevoEstado, solucion)) {
-            JOptionPane.showMessageDialog(this, "Incidencia actualizada correctamente");
-            txtSolucion.setText("");
-            cargarDatos();
+        if (nuevoEstado.equals("Resuelta") && solucion.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe escribir una solución para marcar la incidencia como resuelta.");
+            txtSolucion.requestFocus();
+            return;
         }
+
+        IncidenciaDAO dao = new IncidenciaDAO();
+
+        if (dao.actualizarEstadoYSolucion(idIncidencia, nuevoEstado, solucion)) {
+            JOptionPane.showMessageDialog(this, "Incidencia actualizada correctamente.");
+            cargarIncidencias();
+            limpiar();
+        }
+    }
+
+    private void limpiar() {
+        tabla.clearSelection();
+        cmbEstado.setSelectedIndex(0);
+        txtSolucion.setText("");
     }
 
     public static void main(String[] args) {

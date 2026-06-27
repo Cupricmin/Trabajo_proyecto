@@ -40,6 +40,33 @@ public class EncomiendaDAO {
             return false;
         }
     }
+    public String generarCodigoAutomatico() {
+
+    cConnection cn = new cConnection();
+
+    String sql = "SELECT MAX(idEncomienda) AS ultimo FROM Encomienda";
+
+    try {
+
+        Connection con = cn.ObtenerConexion();
+        PreparedStatement ps = con.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+
+        int numero = 1;
+
+        if (rs.next()) {
+            numero = rs.getInt("ultimo") + 1;
+        }
+
+        cn.closeConecction();
+
+        return String.format("ENC-%04d", numero);
+
+    } catch (Exception ex) {
+        return "ENC-0001";
+    }
+
+}
 
     public List<Encomienda> listarTodas() {
         List<Encomienda> lista = new ArrayList<>();

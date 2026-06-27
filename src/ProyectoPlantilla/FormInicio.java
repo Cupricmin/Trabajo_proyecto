@@ -119,15 +119,17 @@ public class FormInicio extends JFrame {
         });
 
         btnRastrear.addActionListener(e -> {
-            String codigo = txtCodigo.getText().trim();
+    String codigo = txtCodigo.getText().trim();
 
-            if (codigo.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Ingrese el código de seguimiento.");
-            } else {
-                JOptionPane.showMessageDialog(this, "Buscando encomienda: " + codigo);
-            }
-        });
+    if (codigo.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Ingrese el código de seguimiento.");
+        txtCodigo.requestFocus();
+        return;
+    }
 
+    new FrmRastreoCliente(codigo).setVisible(true);
+dispose();
+});
         animarBus();
     }
 
